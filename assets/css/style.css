@@ -33,7 +33,6 @@ header {
 }
 
 #city-group {
-    background-color: red;
     list-style-type: none;
     display: flex;
     justify-content: center;
@@ -50,16 +49,23 @@ header {
     align-items: center;
 }
 
+.city.active {
+    font-weight: bold;
+    background-color: white;
+    color: black;
+}
+
 .btn-delete {
     float: right;
     background-color: transparent;
-    color: transparent;
+    color: black;
+    opacity: 0.2;
     font-size: 15px;
 }
 
 .btn-delete:hover {
     border: 1px dotted black;
-    color: black;
+    opacity: 1;
     font-size: 20px;
     transition: all .3s ease-in-out;
 }
@@ -77,10 +83,5 @@ header {
 
 td {
     padding-right: 1rem;
-
-}
-
-#week {
-    background-color: green;
 }
 

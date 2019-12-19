@@ -1,12 +1,13 @@
 const $fiveDay = $(".five-day");
 const cities = JSON.parse(localStorage.getItem("cities")) || ["Austin", "Detroit", "Los Angeles"];
 const API_BASE_URL = "http://api.openweathermap.org/data/2.5/";
-const METERS_PER_SEC_TO_MPH = 2.23693629;
-function populateCities() {
+let currentCity = "";
+
+function populateCities(city) {
     // Populate the cities list
     let $cityGroup = $('#city-group');
 
-    $cityGroup.html("");
+    $cityGroup.empty();
     cities.forEach(function(city) {
         let li = $('<li>').text(city).addClass("list-group-item city").attr("data-city", city);        
         let btnDelete = $("<button>").addClass("btn btn-delete");
@@ -15,6 +16,10 @@ function populateCities() {
         li.append(btnDelete);
         $cityGroup.append(li);
     });
+
+    if (city !== currentCity) {
+        loadCity(city);
+    }
 }
 
 function addCity() {
@@ -27,13 +32,15 @@ function addCity() {
     cities.push(city);
     cities.sort();
     localStorage.setItem("cities", JSON.stringify(cities));
-    populateCities();
-    loadCity(city);
+    populateCities(city);
     $("#searchInput").val("");
 }
 
 function loadCity(city) {
     // Set the Heading for current conditions
+    $(".city").removeClass("active");
+    $(".city[data-city=\"" + city + "\"]").addClass("active");
+
     $("#head-city-date").text(city + moment().format(" (M/D/YYYY)"));
     // Set the image for current conditions
     // Set the current Temperature
@@ -41,11 +48,12 @@ function loadCity(city) {
     // Set the current Windspeed
     // Set the curren UV-Index
     load5DayForecast(city);
+    currentCity = city;
+    localStorage.setItem("currentCity", currentCity);
 }
 
 function load5DayForecast(city) {
     // Clear out old 5-day
-    $fiveDay.html("");
     getData(city);
 }
 
@@ -87,6 +95,7 @@ function getData(city) {
     }).then(function(response) {
         console.log("Forecast Response Received");
         console.log(response);
+        $fiveDay.empty();
 
         for(let i=0; i<5; i++) {
             let li = response.list[i*8];
@@ -132,10 +141,10 @@ function create5DayCard(momentDay, temperature, humidity) {
 }
 
 $(function() {
-    
-    populateCities();
-    loadCity(cities[0]);
+    let initialCity = localStorage.getItem("currentCity") || cities[0];
+    populateCities(initialCity);
 
+    // Handle City Search
     $("#btnSearchSubmit").on("click", addCity);
     $('#searchInput').on("keypress", function(event) {
         if (event.which === 13) {
@@ -143,33 +152,26 @@ $(function() {
         }
     });
 
-    // Setup click listener to delete cities or load cities
-    $("#city-group").on("click", function(event) {
-        if (event.target.matches("i") || 
-            event.target.matches("button")) {
-            // DELETE CITY
-            let city = event.target.parentElement.getAttribute("data-city") || 
-                event.target.parentElement.parentElement.getAttribute("data-city");
-            cities.splice(cities.indexOf(city),1);
-            localStorage.setItem("cities", JSON.stringify(cities));
-            populateCities();
-        
-        } else if (event.target.matches("button")) {
-            
-            // DELETE CITY
-            console.log(event.target);
-            let city = event.target.parentElement.getAttribute("data-city");
-            cities.splice(cities.indexOf(city),1);
-            localStorage.setItem("cities", JSON.stringify(cities));
-            populateCities();
-        }
-        else if (event.target.matches("li")) {
-            // LOAD CITY
-            console.log(event.target);
-            loadCity(event.target.getAttribute("data-city"));
-        } else {
-            console.log(event.target);
-        }
+    // Delete Button Click - DELETE CITY
+    $("#city-group").on("click", ".btn-delete", function(event) {
+        event.stopPropagation();
+        // TODO - Why do I need to match i as well?
+        let city = $(this).parent().attr("data-city");
+        console.log("TO DELETE = ", city);
+        // Delete the city from the array and update local storage
+        cities.splice(cities.indexOf(city),1);
+        localStorage.setItem("cities", JSON.stringify(cities));
+        // Repopulate cities list
+        let newCity = (currentCity === city) ? cities[0] : currentCity;
+        populateCities(newCity);
+     });
+
+     // City Click - LOAD CITY
+     $("#city-group").on("click", "li", function() {
+        // LOAD CITY
+        console.log("LOAD");
+        console.log($(this).attr("data-city"));
+        loadCity($(this).attr("data-city"));
     });
 
     
