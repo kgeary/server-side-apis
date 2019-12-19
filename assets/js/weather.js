@@ -41,20 +41,12 @@ function loadCity(city) {
     $(".city").removeClass("active");
     $(".city[data-city=\"" + city + "\"]").addClass("active");
 
-    $("#head-city-date").text(city + moment().format(" (M/D/YYYY)"));
-    // Set the image for current conditions
-    // Set the current Temperature
-    // Set the current Humidity
-    // Set the current Windspeed
-    // Set the curren UV-Index
-    load5DayForecast(city);
-    currentCity = city;
-    localStorage.setItem("currentCity", currentCity);
-}
-
-function load5DayForecast(city) {
-    // Clear out old 5-day
-    getData(city);
+    if (city) {
+        $("#head-city-date").text(city + moment().format(" (M/D/YYYY)"));
+        getData(city);
+        currentCity = city;
+        localStorage.setItem("currentCity", currentCity);
+    }
 }
 
 function getData(city) {
