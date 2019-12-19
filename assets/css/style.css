@@ -75,6 +75,11 @@ header {
     margin-bottom: 1rem;
 }
 
+td {
+    padding-right: 1rem;
+
+}
+
 #week {
     background-color: green;
 }
