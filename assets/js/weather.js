@@ -88,7 +88,7 @@ function getData(city) {
             alert(console.log(response.responseText.message));
         }
     }).then(function(response) {
-        fillCurrentDay(response);
+        fillCurrentDay(city, response);
         return response;
     }).then(function(response) {
         // API CALL 2 - Next - Get the UV Index 
@@ -114,7 +114,7 @@ function getData(city) {
 }
 
 // Fill the Current Day Info from Server Response
-function fillCurrentDay(response) {
+function fillCurrentDay(city, response) {
     console.log("Current Day Response Received");
     console.log(response);
 
