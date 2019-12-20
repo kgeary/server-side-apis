@@ -18,14 +18,14 @@
     </header>
     <main class="container-fluid">
         <div class="row">
-            <div class="col-auto left-pane">
+            <div class="col-sm-4 left-pane">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-sm">
                         <label for="search" id="searchLabel">Search for a City:</label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-8 pr-0">
+                    <div class="col-sm-8 col-8 pr-1">
                         <input id="searchInput" type="search" class="form-control">
                     </div>
                     <div class="col-auto pl-0">
@@ -34,12 +34,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col my-auto">
-                        <ul id="city-group" class="list-group"></ul>
+                    <div class="col">
+                        <ul id="city-list" class="list-group"></ul>
                     </div>
                 </div>
             </div>
-            <div class="col-8">
+            <div class="col-sm-8 right-pane">
                 <div class="row">
                     <div class="col-12 mt-3">
                         <div class="card card-big">
@@ -48,30 +48,31 @@
                                     <h3 id="head-city-date">Atlanta (12/18/2019)</h3>
                                     <img id="conditions-image" src="" alt="Current Conditions">
                                 </div>
-                                <table>
+                                <h5 id="time-hour">1pm</h5>
+                                <table class="table table-sm table-hover">
                                     <tr>
-                                        <td>Temperature:</td>
+                                        <th>Temperature:</th>
                                         <td><span id="temperature"></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Humidity:</td>
+                                        <th>Humidity:</th>
                                         <td><span id="humidity"></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Wind Speed:</td>
+                                        <th>Wind Speed:</th>
                                         <td><span id="wind-speed"></span></td>
                                     </tr>
                                     <tr>
 
-                                        <td>(Description):</td>
+                                        <th>UV Index:</th>
                                         <td><span id="uv-index"></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Sunrise</td>
+                                        <th>Sunrise</th>
                                         <td><span id="sunrise"></span></td>
                                     </tr>
                                     <tr>
-                                        <td>Sunset</td>
+                                        <th>Sunset</th>
                                         <td><span id="sunset"></span></td>
                                     </tr>
                                 </table>
@@ -80,7 +81,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 mt-3">
+                    <div class="col-sm-12 mt-3">
                         <h3>5-day Forecast</h3>
                         <div class="row five-day">
                             <!-- Five Day Cards Here -->
