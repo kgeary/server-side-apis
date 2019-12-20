@@ -53,7 +53,8 @@ header {
 
 .city.active {
     background-color: white;
-    color: black;
+    opacity: 0.9;
+    color: rgb(32, 124, 245);
     font-weight: bold;
 }
 
@@ -72,25 +73,28 @@ header {
     transition: all .3s ease-in-out;
 }
 
-/* .btn-delete::after {
-    content: "";
-    display: block;
-    clear: both;
-} */
-
+/* Today Headline bar */
 #today {
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.table {
-    margin-top: 1rem;
-    width: auto;
+#time-hour {
+    background-color: lightgray;
+    padding: 0.75rem;
+    width: 100%;
 }
 
-.table th {
-    padding-right: 2rem;
+/* Current Day Data Table */
+.table {
+    margin-top: 1rem;
+}
+
+/* Current Day Condition Description */
+p#description {
+    padding: 1rem;
+    padding-left: 1.25rem;
 }
 
 @media screen and (max-width: 576px) {
@@ -139,7 +143,11 @@ header {
         top: 0%;
         right: 0%;
         width: 100px;
+        }
     }
 
-    
+    #description {
+        margin-left: 0;
+        padding-left: 0;
+    }
 }

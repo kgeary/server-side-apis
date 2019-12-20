@@ -1,13 +1,14 @@
 const $fiveDay = $(".five-day");
 const cities = JSON.parse(localStorage.getItem("cities")) || ["Austin", "Detroit", "Los Angeles"];
 const API_BASE_URL = "http://api.openweathermap.org/data/2.5/";
-let currentCity = "";
+const API_KEY = "ab90f7f18ed62303ccdba44fd0f98df2";
+let lastCity = "";
 
+// Populate the cities list and load in a city
 function populateCities(city) {
     // Populate the cities list
-    let $cityGroup = $('#city-list');
+    let $cityGroup = $('#city-list').empty();
 
-    $cityGroup.empty();
     cities.forEach(function(city) {
         let li = $('<li>').text(city).addClass("list-group-item city").attr("data-city", city);        
         let btnDelete = $("<button>").addClass("btn btn-delete");
@@ -17,7 +18,7 @@ function populateCities(city) {
         $cityGroup.append(li);
     });
 
-    if (city !== currentCity) {
+    if (city !== lastCity) {
         loadCity(city);
     }
 }
@@ -28,42 +29,47 @@ function addCity() {
     if (cities.includes(city)) {
         alert("You are already following " + city);
     }
-    testCity(city); // Check to make sure it's a valid city
+    checkValidCity(city); // Check to make sure it's a valid city
 }
 
 // City has been confirmed as legitimate. Add the city to the list
-function AddCityFinal(city) {
-    cities.push(city);
-    cities.sort();
-    localStorage.setItem("cities", JSON.stringify(cities));
-    populateCities(city);
-    $("#searchInput").val("");
+function _addCityFinal(city) {
+    
 }
 
-function testCity(city) {
+function checkValidCity(city) {
+    // Try to get the city and see if an Error is received
     $.ajax({
         url: getApiUrl(city),
         method: "GET",
         error: function(response) {
+            // Invalid City. Alert the user
             console.log(response);
             alert("ERROR: " + response.responseJSON.message);
         },
         success: function(response) {
-            AddCityFinal(city);
+            // Add the city
+            cities.push(city);
+            cities.sort();
+            localStorage.setItem("cities", JSON.stringify(cities));
+            populateCities(city);
+            $("#searchInput").val("");
         }
     });
 }
 
+// Load Data for the specified city
 function loadCity(city) {
-    // Set the Heading for current conditions
+
+    // Set the Active City in the list group
     $(".city").removeClass("active");
     $(".city[data-city=\"" + city + "\"]").addClass("active");
 
     if (city) {
-        $("#head-city-date").text(city + moment().format(" (M/D/YYYY)"));
+        // Load the city data onto the page
         getData(city);
-        currentCity = city;
-        localStorage.setItem("currentCity", currentCity);
+        lastCity = city;
+        localStorage.setItem("lastCity", lastCity);
     }
 }
 
@@ -72,8 +78,8 @@ function getData(city) {
     
     let current_api_url = getApiUrl(city, false);
     let forecast_api_url = getApiUrl(city, true);
-
-    // API CALL HERE - Current Day Weather API
+    
+    // API CALL 1 - Get the Current Day Weather API
     $.ajax({
         url:  current_api_url,
         method: "GET",
@@ -82,24 +88,29 @@ function getData(city) {
             alert(console.log(response.responseText.message));
         }
     }).then(function(response) {
-        // Get the Current Day Data
         fillCurrentDay(response);
         return response;
     }).then(function(response) {
-        // Get the UV Index 
-        return getUvAjax(response.coord.lat, response.coord.lon);
+        // API CALL 2 - Next - Get the UV Index 
+        let uv_api_url = getUvIndexUrl(response.coord.lat, response.coord.lon);
+        return $.ajax({
+            url: uv_api_url,
+            method: "GET",
+        }).then(function(response) {
+            // Set the UV Index
+            $("#uv-index").text(response.value);
+            console.log("UV RESPONSE Received");
+            console.log(response);
+        });        
     }).then(function(response) {
+        // API CALL 3 - Finally - Get the 5-day forecast
         return $.ajax({
             url:  forecast_api_url,
             method: "GET",
         }).then(function(response) {
-            fillFiveDay(response);
-            
+            fillFiveDay(response); 
         });
     });
-
-    // API CALL HERE - 5-Day Forecast API
-    
 }
 
 // Fill the Current Day Info from Server Response
@@ -112,12 +123,14 @@ function fillCurrentDay(response) {
     let tempF = response.main.temp;
     let humidity = response.main.humidity;
     let windSpeed = response.wind.speed;
-    let windDir = response.wind.deg;
-    let coord = response.coord;
     let sunrise = moment.unix(response.sys.sunrise).format("h:mma");
     let sunset = moment.unix(response.sys.sunset).format("h:mma");
+    let windDir = response.wind.deg;
+    let coord = response.coord;
+    $("#head-city-date").text(city + moment().format(" (M/D/YYYY)"));
     $(".right-pane").hide().fadeIn(1000);
     $("#conditions-image").attr("src", iconUrl).attr("alt", condition);
+    $("#description").text(condition);
     $("#head-city-date").text(response.name + moment.unix(response.dt).format(" (M/DD/YYYY)"));
     $("#time-hour").text(moment.unix(response.dt).format("ha"));
     $("#temperature").html(tempF.toFixed(0) + "&deg;F");
@@ -125,55 +138,44 @@ function fillCurrentDay(response) {
     $("#wind-speed").text((windSpeed).toFixed(1)+ "mph");
     $("#uv-index").text(condition);
     $("#sunrise").text(sunrise);
-    $("#sunset").text(sunset);
-    // Call the UV API
-    
-}
-
-function getUvAjax(lat, lon) {
-    let uv_api_url = getUvIndexUrl(lat, lon);
-    return $.ajax({
-        url: uv_api_url,
-        method: "GET",
-    }).then(function(response) {
-        $("#uv-index").text(response.value);
-        console.log("UV RESPONSE Received");
-        console.log(response);
-    });
+    $("#sunset").text(sunset);    
 }
 
 // Fill the 5-Day Forecast Info from Server Response
 function fillFiveDay(response) {
-    let startMoment = moment().clone();
-    
     console.log("5-Day Forecast Response Received");
     console.log(response);
     
     $fiveDay.empty();
+    const numDays = 5;
+    const numHoursPerBlock = 3; // Number of hours between time blocks
+    const numTimeBlocksPerDay = 24/numHoursPerBlock;
+    const offsetStart = numTimeBlocksPerDay - 1;
 
-    for(let i=0; i<5; i++) {
-        let li = response.list[i*8+7];
+    // Create a c card for each day in the interval
+    for(let i=0; i<numDays; i++) {
+        let li = response.list[(i*numTimeBlocksPerDay)+offsetStart];
         let timeStamp = moment.unix(li.dt);
         let humidity = li.main.humidity;;
         let tempF = li.main.temp;
         let iconUrl = getIconUrl(li.weather[0].icon);
         let description = li.weather[0].description;
-        // Pull data from response here
-        let date = startMoment.add(1, "day");
-        // TODO UPDATE IMAGE
         let card = create5DayCard(timeStamp, iconUrl, description, tempF.toFixed(0), humidity.toFixed(0));
         $fiveDay.append(card);
     }
 }
 
 // Get the Final API Url for the UV Index
+// *** lat: latitude of city
+// *** lon: longitude of city
 function getUvIndexUrl(lat, lon) {
     return "http://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat.toFixed(2) + "&lon=" + lon.toFixed(2);
 }
 
 // Get the Final API Url
-// city to query
-// isForecast = True for 5-day forecast, false for current weather
+// *** city to query
+// *** isForecast = True for 5-day forecast, false for current weather
+// Return the current day or 5-day forecast api url
 function getApiUrl(city, isForecast) {
     let queryString = isForecast ? "forecast" : "weather";
     queryString += "?";
@@ -188,6 +190,14 @@ function getIconUrl(iconcode) {
     //return "http://openweathermap.org/img/w/" + iconcode + ".png";
 }
 
+// Create a single 5 day card
+// * arguments:
+// *** momentDay - The time moment for the card time
+// *** iconUrl - link to the conditions icon
+// *** description - current weather conditions
+// *** temperature - Temperature in degrees fahrenheit
+// *** humidity - Humidity percentage
+// * returns card jquery object
 function create5DayCard(momentDay, iconUrl, description, temperature, humidity) {
     let date = momentDay.format("M/D/YYYY");
     let hour = momentDay.format("ha");
@@ -204,8 +214,10 @@ function create5DayCard(momentDay, iconUrl, description, temperature, humidity) 
     return card;
 }
 
+// Document Ready
 $(function() {
-    let initialCity = localStorage.getItem("currentCity") || cities[0];
+    // Get the initial city from local storage, populate the city list, and display the last city
+    let initialCity = localStorage.getItem("lastCity") || cities[0];
     populateCities(initialCity);
 
     // Handle City Search
@@ -219,22 +231,18 @@ $(function() {
     // Delete Button Click - DELETE CITY
     $("#city-list").on("click", ".btn-delete", function(event) {
         event.stopPropagation();
-        // TODO - Why do I need to match i as well?
-        let city = $(this).parent().attr("data-city");
-        console.log("TO DELETE = ", city);
         // Delete the city from the array and update local storage
+        let city = $(this).parent().attr("data-city");
         cities.splice(cities.indexOf(city),1);
         localStorage.setItem("cities", JSON.stringify(cities));
         // Repopulate cities list
-        let newCity = (currentCity === city) ? cities[0] : currentCity;
+        let newCity = (lastCity === city) ? cities[0] : lastCity;
         populateCities(newCity);
      });
 
      // City Click - LOAD CITY
      $("#city-list").on("click", "li", function() {
         // LOAD CITY
-        console.log("LOAD");
-        console.log($(this).attr("data-city"));
         loadCity($(this).attr("data-city"));
     });
 

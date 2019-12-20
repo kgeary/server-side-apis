@@ -48,34 +48,41 @@
                                     <h3 id="head-city-date">Atlanta (12/18/2019)</h3>
                                     <img id="conditions-image" src="" alt="Current Conditions">
                                 </div>
-                                <h5 id="time-hour">1pm</h5>
-                                <table class="table table-sm table-hover">
-                                    <tr>
-                                        <th>Temperature:</th>
-                                        <td><span id="temperature"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Humidity:</th>
-                                        <td><span id="humidity"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Wind Speed:</th>
-                                        <td><span id="wind-speed"></span></td>
-                                    </tr>
-                                    <tr>
+                                <div class="row">
+                                    <h5 id="time-hour">1pm</h5>
+                                    <div class="col-sm-6 px-0">
+                                        <table class="table table-sm table-hover">
+                                            <tr>
+                                                <th>Temperature:</th>
+                                                <td><span id="temperature"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Humidity:</th>
+                                                <td><span id="humidity"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Wind Speed:</th>
+                                                <td><span id="wind-speed"></span></td>
+                                            </tr>
+                                            <tr>
 
-                                        <th>UV Index:</th>
-                                        <td><span id="uv-index"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Sunrise</th>
-                                        <td><span id="sunrise"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Sunset</th>
-                                        <td><span id="sunset"></span></td>
-                                    </tr>
-                                </table>
+                                                <th>UV Index:</th>
+                                                <td><span id="uv-index"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Sunrise</th>
+                                                <td><span id="sunrise"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Sunset</th>
+                                                <td><span id="sunset"></span></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-sm-6 pl-0">
+                                        <p id="description"></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,7 +107,6 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="assets/js/private.js"></script>
     <script src="assets/js/weather.js"></script>
 </body>
 
