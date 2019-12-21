@@ -16,6 +16,7 @@ header {
 .five-day {
     display: flex;
     justify-content: flex-start;
+    
     margin: 0;
 }
 
@@ -25,6 +26,7 @@ header {
     margin: 0;
     margin-bottom: 2rem;
     margin-right: 2rem;
+    width: 160px;
     padding: 0.5rem;
 }
 
