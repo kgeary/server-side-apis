@@ -85,7 +85,7 @@ function getData(city) {
         method: "GET",
         error: function(response) {
             console.log("ERROR");
-            alert(console.log(response.responseText.message));
+            alert(response.responseText.message);
         }
     }).then(function(response) {
         fillCurrentDay(city, response);

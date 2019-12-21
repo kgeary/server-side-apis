@@ -6,7 +6,7 @@ header {
     background-color: #333;
     color: whitesmoke;
     text-align: center;
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
 }
 
 .left-pane {
@@ -26,20 +26,6 @@ header {
     margin-bottom: 2rem;
     margin-right: 2rem;
     padding: 0.5rem;
-}
-
-/* SEARCH */
-#searchLabel {
-    font-weight: bold;
-}
-
-/* CITY LIST */
-#city-list {
-    list-style-type: none;
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-    padding: 0;
 }
 
 .list-group-item.city {
@@ -69,8 +55,26 @@ header {
 .btn-delete:hover {
     border: 1px dotted black;
     opacity: 1;
-    font-size: 20px;
     transition: all .3s ease-in-out;
+}
+
+/* Current Day Data Table */
+.table {
+    margin-top: 1rem;
+}
+
+/* SEARCH */
+#searchLabel {
+    font-weight: bold;
+}
+
+/* CITY LIST */
+#city-list {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    padding: 0;
 }
 
 /* Today Headline bar */
@@ -82,19 +86,21 @@ header {
 
 #time-hour {
     background-color: lightgray;
-    padding: 0.75rem;
+    padding: 0.5rem;
     width: 100%;
-}
-
-/* Current Day Data Table */
-.table {
-    margin-top: 1rem;
 }
 
 /* Current Day Condition Description */
 p#description {
     padding: 1rem;
     padding-left: 1.25rem;
+}
+
+#uv-index {
+    background-color: red;
+    color: white;
+    padding: 0.25rem 0.5rem;   
+    border-radius: 10px; 
 }
 
 @media screen and (max-width: 576px) {
@@ -141,13 +147,16 @@ p#description {
     .card-small img {
         position: absolute;
         top: 0%;
-        right: 0%;
-        width: 100px;
-        }
+        right: 40%;
     }
 
     #description {
         margin-left: 0;
         padding-left: 0;
     }
+
+    #uv-index {
+        padding: 0.1rem 0.5rem;   
+    }
+    
 }
