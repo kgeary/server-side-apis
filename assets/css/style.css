@@ -3,8 +3,8 @@ body {
 }
 
 header {
-    background-color: #333;
     color: whitesmoke;
+    background-color: rgb(32, 124, 245);
     text-align: center;
     padding: 0.25rem 0;
 }
@@ -16,7 +16,6 @@ header {
 .five-day {
     display: flex;
     justify-content: flex-start;
-    
     margin: 0;
 }
 
@@ -28,6 +27,10 @@ header {
     margin-right: 2rem;
     width: 160px;
     padding: 0.5rem;
+}
+
+.card-small img {
+    object-fit: cover;
 }
 
 .list-group-item.city {
@@ -99,7 +102,6 @@ p#description {
 }
 
 #uv-index {
-    background-color: red;
     color: white;
     padding: 0.25rem 0.5rem;   
     border-radius: 10px; 
@@ -148,8 +150,9 @@ p#description {
 
     .card-small img {
         position: absolute;
-        top: 0%;
-        right: 40%;
+        right: 0;
+        top: 0;
+        width: 10rem;
     }
 
     #description {

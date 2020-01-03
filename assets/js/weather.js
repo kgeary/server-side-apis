@@ -93,14 +93,28 @@ function getData(city) {
     }).then(function(response) {
         // API CALL 2 - Next - Get the UV Index 
         let uv_api_url = getUvIndexUrl(response.coord.lat, response.coord.lon);
+        
         return $.ajax({
             url: uv_api_url,
             method: "GET",
         }).then(function(response) {
             // Set the UV Index
             $("#uv-index").text(response.value);
-            console.log("UV RESPONSE Received");
-            console.log(response);
+            let uv = parseInt(response.value);
+            let color;
+            let text = 'white';
+            if (uv < 3)         { color = 'green'; } 
+            else if (uv < 5)    { color = 'yellow'; text = 'black'; }
+            else if (uv < 7)    { color = 'orange'; text = 'black'; }
+            else if (uv < 9)    { color = 'red'; }
+            else if (uv < 11)   { color = 'violet'; }
+            else                { color = 'purple'; }
+
+            $("#uv-index").css('background-color', color);
+            $("#uv-index").css('color', text);
+
+            //console.log("UV RESPONSE Received");
+            //console.log(response);
         });        
     }).then(function(response) {
         // API CALL 3 - Finally - Get the 5-day forecast
@@ -208,7 +222,7 @@ function create5DayCard(momentDay, iconUrl, description, temperature, humidity) 
     let card = $("<div>").addClass("col-md-auto col-sm-12 card card-small"); 
     card.append($("<h5>").addClass("card-title dayDate").text(date));
     card.append($("<p>").addClass("card-text dayHour").text(hour));
-    card.append($("<img>").attr("src", iconUrl).attr("alt", imgAlt).attr("style", "width: 3.5rem;"));
+    card.append($("<img>").attr("src", iconUrl).attr("alt", imgAlt));
     card.append($("<p>").addClass("card-text dayTemp").html(temp));
     card.append($("<p>").addClass("card-text dayHumidity").text(humid));    
     return card;
