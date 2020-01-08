@@ -1,6 +1,6 @@
 const $fiveDay = $(".five-day");
 const cities = JSON.parse(localStorage.getItem("cities")) || ["Austin", "Detroit", "Los Angeles"];
-const API_BASE_URL = "http://api.openweathermap.org/data/2.5/";
+const API_BASE_URL = "https://api.openweathermap.org/data/2.5/";
 const API_KEY = "ab90f7f18ed62303ccdba44fd0f98df2";
 let lastCity = "";
 
@@ -183,7 +183,7 @@ function fillFiveDay(response) {
 // *** lat: latitude of city
 // *** lon: longitude of city
 function getUvIndexUrl(lat, lon) {
-    return "http://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat.toFixed(2) + "&lon=" + lon.toFixed(2);
+    return "https://api.openweathermap.org/data/2.5/uvi?appid=" + API_KEY + "&lat=" + lat.toFixed(2) + "&lon=" + lon.toFixed(2);
 }
 
 // Get the Final API Url
@@ -201,7 +201,7 @@ function getApiUrl(city, isForecast) {
 // Return the icon url from the icon code provided by openwweathermap.org
 function getIconUrl(iconcode) {
     return "https://openweathermap.org/img/wn/" + iconcode + "@2x.png";
-    //return "http://openweathermap.org/img/w/" + iconcode + ".png";
+    //return "https://openweathermap.org/img/w/" + iconcode + ".png";
 }
 
 // Create a single 5 day card
